@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gemma VLM Adaptation"
+  short_description: "Adapt HF models into MCore"
+  default_prompt: "Use this skill when adapting a new HF text-only, VLM, or omni model family into mcore-bridge or Megatron and you need a practical workflow for parser, loader, bridge, multimodal, and validation work."
