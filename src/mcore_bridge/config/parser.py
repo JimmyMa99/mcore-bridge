@@ -112,6 +112,9 @@ def hf_to_mcore_config(hf_config: PretrainedConfig) -> Dict[str, Any]:
     interleave_moe_layer_step = res.pop('interleave_moe_layer_step', None)
     window_size = res.pop('window_size', None)
     rope_scaling = res.get('rope_scaling') or {}
+    if 'full_attention' in rope_scaling:
+        rope_scaling = rope_scaling['full_attention']
+        res['rope_scaling'] = rope_scaling
     if llm_model_type in {'qwen3', 'qwen3_moe', 'qwen3_next'} or hf_model_type in {
             'qwen3_omni_moe', 'qwen3_omni', 'qwen3_vl', 'qwen3_vl_moe', 'qwen3_5', 'qwen3_5_moe'
     }:
@@ -193,6 +196,9 @@ def hf_to_mcore_config(hf_config: PretrainedConfig) -> Dict[str, Any]:
     elif hf_model_type == 'glm4v':
         res['rotary_interleaved'] = True
 
+    if rope_scaling.get('rope_type') is None and rope_scaling.get('type') is not None:
+        rope_scaling = {**rope_scaling, 'rope_type': rope_scaling['type']}
+        res['rope_scaling'] = rope_scaling
     if 'partial_rotary_factor' not in res and 'partial_rotary_factor' in rope_scaling:
         res['partial_rotary_factor'] = rope_scaling['partial_rotary_factor']
     if 'rotary_base' not in res and 'rope_theta' in rope_scaling:
